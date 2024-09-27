@@ -7,7 +7,7 @@ import java.nio.file.Path
 
 class GestorNotas(private val fileRoute: Path) {
 
-    fun transform(file: File): List<Map<String, List<String>>> {
+    fun transform(file: File): List<MutableMap<String, String>> {
 
         //Comprobar si el fichero existe
         if (Files.notExists(fileRoute)) {
@@ -15,42 +15,38 @@ class GestorNotas(private val fileRoute: Path) {
             Files.createFile(fileRoute)
         }
 
-        val listUsers = mutableListOf<Map<String, List<String>>>()
-        val users = mutableMapOf<String, MutableList<String>>()
-        var titles = listOf<String>()
-        var isfirstLine = true
+        val listUsers = mutableListOf<MutableMap<String, String>>()
+        val users = mutableMapOf<String, String>()
+
+        val isFirstLine = listOf("Apellidos","Nombre","Asistencia","Parcial1","Parcial2","Ordinario1","Ordinario2","Practicas","OrdinarioPracticas")
 
         //Leer fichero
         val br: BufferedReader = Files.newBufferedReader(fileRoute)
         br.use {
             it.forEachLine { line ->
-                if (isfirstLine) {
-                    titles = line.split(";")
-                    titles.forEach{ title ->
-                        users[title] = mutableListOf()
-                    }
-                    isfirstLine = false
-                } else {
-                    val userData = line.split(";")
-                    for (i in userData.indices) {
-                        users[titles[i]]?.add(userData[i])
-                        listUsers.add(users)
-                    }
+                val userData = line.split(";")
+                for (i in userData.indices) {
+                    users[isFirstLine[i]] = userData[i]
                 }
+                listUsers.add(users)
             }
         }
 
-        listUsers.forEach { user ->
-            user.forEach { (_, datos) ->
-                datos.sorted()
-            }
-        }
-
-        return listUsers
+        return listUsers.sortedBy { it["Apellidos"] }
     }
 
-    fun addStudent(studentList: List<Map<String, List<String>>>) {
-        TODO("Crear una columna NotaFinal (map)")
+    fun calculateFinalGrade(studentList: List<MutableMap<String, String>>) {
+
+
+
+
+
+    }
+
+    fun calculateGrade(studentList: MutableList<Map<String, List<String>>>) {
+
+
+
     }
 
     fun gradesManager(studentList: List<Map<String, Int>>): Pair<List<String>,List<String>> {
