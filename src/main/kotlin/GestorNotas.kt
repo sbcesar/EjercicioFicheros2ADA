@@ -16,7 +16,7 @@ class GestorNotas(private val fileRoute: Path) {
         }
 
         val listUsers = mutableListOf<Map<String, List<String>>>()
-        val user = mutableMapOf<String, MutableList<String>>()
+        val users = mutableMapOf<String, MutableList<String>>()
         var titles = listOf<String>()
         var isfirstLine = true
 
@@ -27,31 +27,33 @@ class GestorNotas(private val fileRoute: Path) {
                 if (isfirstLine) {
                     titles = line.split(";")
                     titles.forEach{ title ->
-                        user[title] = mutableListOf()
+                        users[title] = mutableListOf()
                     }
                     isfirstLine = false
                 } else {
                     val userData = line.split(";")
                     for (i in userData.indices) {
-                        user[titles[i]]?.add(userData[i])
+                        users[titles[i]]?.add(userData[i])
+                        listUsers.add(users)
                     }
                 }
             }
         }
-        listUsers.add(user)
-        listUsers.forEach { user ->
-            user.filter { (key,values) ->
 
+        listUsers.forEach { user ->
+            user.forEach { (_, datos) ->
+                datos.sorted()
             }
-        } }
-        return
+        }
+
+        return listUsers
     }
 
-    fun addStudent(studentList: List<Map<String, Int>>) {
-
+    fun addStudent(studentList: List<Map<String, List<String>>>) {
+        TODO("Crear una columna NotaFinal (map)")
     }
 
     fun gradesManager(studentList: List<Map<String, Int>>): Pair<List<String>,List<String>> {
-
+        TODO("Que devuelva dos listas y que una sea Aprobados y otra suspensos")
     }
 }
