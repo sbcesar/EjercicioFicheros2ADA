@@ -1,12 +1,23 @@
 package org.example
 
 import java.io.File
-import java.nio.file.Path
 
 fun main() {
-    val root = Path.of("src")
-    val fileRoute = root.resolve("main").resolve("resources").resolve("calificaciones.csv")
-    val file = File(fileRoute.toUri())
-    val gestorNotas = GestorNotas(fileRoute)
-    gestorNotas.transform(file)
+    val manager = GestorNotas()
+    val file = File("src/main/resources/calificaciones.csv")
+    val students = manager.transform(file)
+
+    manager.calculateFinalGrade(students)
+
+    val (pass, fail) = manager.passOrFail(students)
+
+    println("Alumnos aprobados:")
+    pass.forEach { student ->
+        println("Nombre: ${student["Nombre"]} ${student["Apellidos"]}, Nota Final: ${student["NotaFinal"]}")
+    }
+
+    println("\nAlumnos suspensos:")
+    fail.forEach { student ->
+        println("Nombre: ${student["Nombre"]} ${student["Apellidos"]}, Nota Final: ${student["NotaFinal"]}")
+    }
 }
